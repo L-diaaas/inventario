@@ -74,7 +74,7 @@ def deletar_marca(id):
         return {'mensagem': 'Marca deletada com sucesso!'}, 200
     except IntegrityError:
         db.session.rollback()
-        return {'mensagem': 'Erro ao deletar Marca.'}, 200
+        return {'mensagem': 'Erro ao deletar Marca.'}, 400
 
 
 
