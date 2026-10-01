@@ -1,0 +1,61 @@
+Inventario/
+  app.py 
+  config.py
+  requirements.txt
+
+  catalogos/
+    marca/                  
+	nome
+    sistema_operacional/    
+	versao
+    tipo_memoria_ram/       
+	nome
+
+  localizacao/
+    andar/                  
+	nome
+    mesa/                   	
+	numero, status, andar_id
+
+  pessoas/
+    colaboradores/          
+	nome, cargo, status
+
+  equipamentos/
+    maquina/                
+	nome, s_tag, status, data_compra, fim_garantia, data_manutencao,modelo_id, mesa_id, colaborador_id, nobreak_id, sistema_operacional_id
+    nobreak/                
+        codigo, status, data_troca_bateria, modelo_nobreak_id, voltagem_id, qtd_tomadas_id, tipo_tomada_id
+
+  componentes/              
+    modelo_processador/     
+	nome, marca_id
+    processador/            
+	status, modelo_processador_id, maquina_id
+    memoria_ram/            
+	capacidade, status, tipo_memoria_ram_id, maquina_id
+    armazenamento/          
+	capacidade, tipo, status, maquina_id
+
+  perifericos/
+    monitor/                
+	modelo, polegadas, status, marca_id, maquina_id
+    mouse/                  
+	modelo, tipo, status, marca_id, maquina_id
+    teclado/                
+	modelo, layout, status, marca_id, maquina_id
+    headset/
+	modelo, status, marca_id, maquina_id
+
+  especificacoes/
+    modelo_maquina/         
+	nome, marca_id
+    modelo_nobreak/         
+	nome, marca_id
+    voltagem/               
+	valor
+    qtd_tomadas/            
+	numero
+    tipo_tomada/            
+	nome
+
