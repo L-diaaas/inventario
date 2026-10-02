@@ -54,3 +54,4 @@ def deletar_processador(id):
     db.session.delete(processador)
     db.session.commit()
     return {"message": "Tipo do processador deletado com sucesso."}, 200
+

@@ -17,8 +17,8 @@ def adicionar_andar():
 
     if len(nome) < 2:
         return {'error': 'O nome do andar deve ter pelo menos 2 caracteres'}, 400
-    if len(nome) > 20:
-        return {'error': 'O nome do andar deve ter menos de 20 caracteres'}, 400
+    if len(nome) > 50:
+        return {'error': 'O nome do andar deve ter menos de 50 caracteres'}, 400
 
     existente = Andar.query.filter(db.func.lower(Andar.nome) == nome.lower()).first()
 
@@ -70,7 +70,7 @@ def atualizar_andar(id):
     except IntegrityError:
         db.session.rollback()
         return {'error': 'Erro ao atualizar andar'}, 400
-    return andar.to_dict()
+    return andar.to_dict(), 200
 
 @andar_bp.route('/<int:id>', methods=['DELETE'])
 def deletar_andar(id):
@@ -83,5 +83,7 @@ def deletar_andar(id):
     except IntegrityError:
         db.session.rollback()
         return {'error': 'Erro ao deletar andar'}, 400
+
+
     
     

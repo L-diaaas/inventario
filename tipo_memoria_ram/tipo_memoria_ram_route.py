@@ -21,7 +21,7 @@ def adicionar_tipo_ram():
 @tipo_memoria_ram_bp.route('/', methods=['GET'])
 def listar_tipos_memoria_ram():
     tipos_ram = TipoMemoria.query.all()
-    return [tipo_ram.to_dict for tipo_ram in tipos_ram]
+    return [tipo_ram.to_dict for tipo_ram in tipos_ram], 200
 
 @tipo_memoria_ram_bp.route('/<int:id>', methods=['GET'])
 def obter_tipo_ram(id):
