@@ -1,55 +1,80 @@
-from flask import Blueprint, request, jsonify
-from catalogos.tipo_memoria_ram.tipo_memoria_ram_model import TipoMemoria
+from flask import Blueprint, request
+from catalogos.tipo_memoria_ram.tipo_memoria_ram_model import TipoMemoria, validar_tipo
 from config import db
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 tipo_memoria_ram_bp = Blueprint('tipo_memoria_ram_routes', __name__, url_prefix='/tipo-memoria')
 
+
 @tipo_memoria_ram_bp.route('/', methods=['POST'])
 def adicionar_tipo_ram():
-    tipo = request.json.get('tipo')
+    dados = request.get_json(silent=True) or {}
 
-    novo_tipo_memoria_ram = TipoMemoria(tipo=tipo)
-    db.session.add(novo_tipo_memoria_ram)
+    tipo, erro = validar_tipo(dados.get('tipo'))
+    if erro:
+        return erro
+
     try:
+        novo_tipo = TipoMemoria(tipo=tipo)
+        db.session.add(novo_tipo)
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {"error": "Erro ao cadastrar novo tipo de memoria ram."}, 400
-    return [novo_tipo_memoria_ram.to_dict()], 201
+        return {'error': 'Esse tipo de memória RAM já está cadastrado.'}, 409
+
+    return {'mensagem': 'Tipo de memória RAM cadastrado com sucesso', 'tipo': novo_tipo.to_dict()}, 201
+
 
 @tipo_memoria_ram_bp.route('/', methods=['GET'])
 def listar_tipos_memoria_ram():
-    tipos_ram = TipoMemoria.query.all()
-    return [tipo_ram.to_dict for tipo_ram in tipos_ram]
+    tipos = TipoMemoria.query.all()
+    return [tipo.to_dict() for tipo in tipos], 200
+
 
 @tipo_memoria_ram_bp.route('/<int:id>', methods=['GET'])
 def obter_tipo_ram(id):
-    tipo_ram = TipoMemoria.query.get_or_404(id)
-    return tipo_ram.to_dict(), 200
+    tipo = TipoMemoria.query.get_or_404(id)
+    return tipo.to_dict(), 200
+
 
 @tipo_memoria_ram_bp.route('/<int:id>', methods=['PATCH'])
 def atualizar_tipo_memoria_ram(id):
     tipo_ram = TipoMemoria.query.get_or_404(id)
+    dados = request.get_json(silent=True) or {}
 
-    dados = request.json or {}
+    if 'tipo' not in dados:
+        return {'error': 'Nenhum campo para atualizar foi informado.'}, 400
 
-    if 'tipo' in dados:
-        tipo = dados.get('tipo')
-        if 'tipo' and TipoMemoria.query.filter(TipoMemoria.tipo == tipo, TipoMemoria.id != id).first():
-            return {"error": "Esse tipo de memória ram já está cadastrado"}, 400
-        tipo_ram.tipo = tipo
+    tipo, erro = validar_tipo(dados.get('tipo'), id_atual=id)
+    if erro:
+        return erro
+
+    tipo_ram.tipo = tipo
 
     try:
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {"error": "Erro ao atualizar o tipo de memória ram"}, 400
-    return tipo_ram.to_dict()
+        return {'error': 'Esse tipo de memória RAM já está cadastrado.'}, 409
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {'error': 'Erro ao atualizar o tipo de memória RAM.'}, 500
+
+    return {'mensagem': 'Tipo de memória RAM atualizado com sucesso', 'tipo': tipo_ram.to_dict()}, 200
+
 
 @tipo_memoria_ram_bp.route('/<int:id>', methods=['DELETE'])
 def deletar_tipo_memoria_ram(id):
-    tipo_memoria = TipoMemoria.query.get_or_404(id)
-    db.session.delete(tipo_memoria)
-    db.session.commit()
-    return {"message": "Tipo de memoria ram deletado com sucesso."}, 200
+    tipo_ram = TipoMemoria.query.get_or_404(id)
+
+    try:
+        db.session.delete(tipo_ram)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return {'error': 'Não é possível deletar esse tipo, pois ele está vinculado a outros registros.'}, 409
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {'error': 'Erro ao deletar o tipo de memória RAM.'}, 500
+
+    return {'mensagem': 'Tipo de memória RAM deletado com sucesso.'}, 200

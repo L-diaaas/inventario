@@ -25,3 +25,21 @@ class Mesa(db.Model):
             } if self.andar else None
         }
 
+def validar_nome(nome, id_atual=None):
+    if not isinstance(nome, str) or not nome.strip():
+        return None, ({'error': 'A identificação da mesa é obrigatória.'}, 400)
+
+    nome = nome.strip()
+
+    if len(nome) < 2:
+        return None, ({'error': 'A identificação da mesa deve ter no mínimo 2 caracteres.'}, 400)
+    if len(nome) > 100:
+        return None, ({'error': 'A identificação da mesa deve ter no máximo 100 caracteres.'}, 400)
+
+    query = Mesa.query.filter(db.func.lower(Mesa.nome) == nome.lower())
+    if id_atual:
+        query = query.filter(Mesa.id != id_atual)
+    if query.first():
+        return None, ({'error': 'Essa identificação já existe.'}, 409)
+
+    return nome, None

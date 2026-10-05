@@ -1,56 +1,75 @@
-from flask import Blueprint, jsonify, request
-from .sistema_operacional_model import SistemaOperacional
+from flask import Blueprint, request
+from .sistema_operacional_model import SistemaOperacional, validar_versao
 from config import db
-from sqlalchemy.exc import IntegrityError 
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 sistema_operacional_bp = Blueprint('sistema_operacional_routes', __name__, url_prefix='/sistemas-operacionais')
 
 @sistema_operacional_bp.route('/', methods=['POST'])
-def adiconar_sistema_operacional():
-    versao = request.json.get('versao')
+def adicionar_sistema_operacional():
+    dados = request.get_json(silent=True) or {}
 
-    novo_sistema_operacional = SistemaOperacional(versao=versao)
-    db.session.add(novo_sistema_operacional)
+    versao, erro = validar_versao(dados.get('versao'))
+    if erro:
+        return erro
+
     try:
+        nova_versao = SistemaOperacional(versao)
+        db.session.add(nova_versao)
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {"error": "Erro ao cadastrar novo sistema operacional."}, 400
-    return [novo_sistema_operacional.to_dict()], 201
+        return {'error': 'Essa versão de Sistema Operacional já está cadastrada.'}, 409
+
+    return {'mensagem': 'Nova versão adicionada com sucesso', 'versao': nova_versao.to_dict()}, 201
 
 @sistema_operacional_bp.route('/', methods=['GET'])
 def listar_sistemas_operacionais():
-    sistema_operacional = SistemaOperacional.query.all()
-    return [sistemas_operacionais.to_dict for sistemas_operacionais in sistema_operacional], 200
+    sistemas = SistemaOperacional.query.all()
+    return [so.to_dict() for so in sistemas], 200
 
 @sistema_operacional_bp.route('/<int:id>', methods=['GET'])
-def obter_sistema_opercional(id):
+def obter_sistema_operacional(id):
     sistema_operacional = SistemaOperacional.query.get_or_404(id)
     return sistema_operacional.to_dict(), 200
 
 @sistema_operacional_bp.route('/<int:id>', methods=['PATCH'])
-def atualizar_versao_sistema_operacional(id):
+def atualizar_sistema_operacional(id):
     sistema_operacional = SistemaOperacional.query.get_or_404(id)
+    dados = request.get_json(silent=True) or {}
 
-    dados = request.json or {}
+    if 'versao' not in dados:
+        return {'error': 'Nenhum campo para atualizar foi informado.'}, 400
 
-    if 'versao' in  dados:
-        versao = dados.get('versao')
-        if versao and SistemaOperacional.query.filter(SistemaOperacional.versao == versao, SistemaOperacional.id != id).first():
-            return {"error": "Essa versão de sistema operacional já está cadastrada"}, 400
-        sistema_operacional.versao = versao
+    versao, erro = validar_versao(dados.get('versao'), id_atual=id)
+    if erro:
+        return erro
 
-    try: 
+    sistema_operacional.versao = versao
+
+    try:
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {"error": "Erro ao atualizar a versao do sistema operacional"}, 500
+        return {'error': 'Essa versão de Sistema Operacional já está cadastrada.'}, 409
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {'error': 'Erro ao atualizar a versão do Sistema Operacional.'}, 500
 
-    return sistema_operacional.to_dict()
+    return {'mensagem': 'Versão atualizada com sucesso', 'versao': sistema_operacional.to_dict()}, 200
 
 @sistema_operacional_bp.route('/<int:id>', methods=['DELETE'])
-def deleter_versao_sistema_operacional(id):
+def deletar_sistema_operacional(id):
     sistema_operacional = SistemaOperacional.query.get_or_404(id)
-    db.session.delete(sistema_operacional)
-    db.session.commit()
-    return {"message": "Versão do sitema operacional deletada com sucesso."}, 200
+
+    try:
+        db.session.delete(sistema_operacional)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return {'error': 'Não é possível deletar essa versão, pois ela está vinculada a outros registros.'}, 409
+    except SQLAlchemyError:
+        db.session.rollback()
+        return {'error': 'Erro ao deletar a versão do Sistema Operacional.'}, 500
+
+    return {'mensagem': 'Versão do Sistema Operacional deletada com sucesso.'}, 200
