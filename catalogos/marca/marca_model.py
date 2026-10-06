@@ -6,6 +6,13 @@ class Marca(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
 
+    modelos_maquinas = db.relationship('ModeloMaquina', backref='marca')
+    modelos_nobreaks = db.relationship('ModeloNobreak', backref='marca')
+    monitor = db.relationship('Monitor', backref='marca')
+    mouse = db.relationship('Mouse', backref='marca')
+    teclado = db.relationship('Teclado', backref='marca')
+    headset = db.relationship('Headset', backref='marca')
+
     def __init__(self, nome):
         self.nome = nome
 

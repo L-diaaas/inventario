@@ -12,4 +12,6 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
 db = SQLAlchemy(app)
