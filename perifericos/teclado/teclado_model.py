@@ -15,7 +15,6 @@ class Teclado(db.Model):
     )
 
     marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
-    marca = db.relationship('Marca', backref='Teclados')
 
     def __init__(self, tipo, marca_id, status='livre'):
         self.tipo = tipo

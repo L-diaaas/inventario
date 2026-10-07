@@ -15,7 +15,6 @@ class Mouse(db.Model):
     )
 
     marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
-    marca = db.relationship('Marca', backref='mouses')
 
     def __init__(self, tipo, marca_id, status='livre'):
         self.tipo = tipo

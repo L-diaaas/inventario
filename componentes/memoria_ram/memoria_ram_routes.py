@@ -67,7 +67,6 @@ def obter_memoria_ram(id):
     memoria = MemoriaRam.query.get_or_404(id)
     return memoria.to_dict(), 200
 
-
 @memoria_ram_bp.route('/<int:id>', methods=['PATCH'])
 def atualizar_memoria_ram(id):
     memoria = MemoriaRam.query.get_or_404(id)

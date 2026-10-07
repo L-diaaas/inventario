@@ -12,7 +12,7 @@ class MemoriaRam(db.Model):
     )
 
     tipo_memoria_ram_id = db.Column(db.Integer, db.ForeignKey('tipo_memoria_ram.id'), nullable=False)
-    tipo_memoria_ram = db.relationship('TipoMemoriaRam', backref='memorias_ram')
+
 
     def __init__(self, quantidade, tipo_memoria_ram_id, status='em_uso'):
         self.quantidade = quantidade
@@ -26,7 +26,7 @@ class MemoriaRam(db.Model):
             'status': self.status,
             'tipo_memoria_ram': {
                 'id': self.tipo_memoria_ram.id,
-                'nome': self.tipo_memoria_ram.nome
+                'tipo': self.tipo_memoria_ram.tipo
             } if self.tipo_memoria_ram else None
         }
 

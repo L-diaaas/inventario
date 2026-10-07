@@ -6,6 +6,8 @@ class TipoMemoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tipo = db.Column(db.String(50), nullable=False)
 
+    memoria_ram = db.relationship('MemoriaRam', backref='tipo_memoria_ram')
+
     def  __init__ (self, tipo):
         self.tipo = tipo
 

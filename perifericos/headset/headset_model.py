@@ -12,7 +12,6 @@ class Headset(db.Model):
     )
 
     marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
-    marca = db.relationship('Marca', backref='headsets')
 
     def __init__(self, modelo, marca_id, status='livre'):
         self.modelo = modelo

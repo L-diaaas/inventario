@@ -12,6 +12,7 @@ class Marca(db.Model):
     mouse = db.relationship('Mouse', backref='marca')
     teclado = db.relationship('Teclado', backref='marca')
     headset = db.relationship('Headset', backref='marca')
+    processador = db.relationship('Processador', backref='marca')
 
     def __init__(self, nome):
         self.nome = nome
