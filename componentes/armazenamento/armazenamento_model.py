@@ -22,7 +22,6 @@ class Armazenamento(db.Model):
             'status': self.status
         }
 
-
 def validar_quantidade(quantidade):
     if not isinstance(quantidade, str) or not quantidade.strip():
         return None, ({'error': 'A quantidade de armazenamento é obrigatória.'}, 400)

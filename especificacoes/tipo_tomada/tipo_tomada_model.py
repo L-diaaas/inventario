@@ -7,6 +7,8 @@ class TipoTomada(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     foto = db.Column(db.String(255), nullable=True)
 
+    nobreak = db.relationship('Nobreak', backref='tipos_tomada')
+
     def __init__(self, nome, foto=None):
         self.nome = nome
         self.foto = foto

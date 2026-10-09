@@ -6,6 +6,8 @@ class QuantidadeTomadas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quantidade = db.Column(db.Integer, nullable=False, unique=True)
 
+    nobreak = db.relationship('Nobreak', backref='qtd_tomadas')
+
     def __init__(self, quantidade):
         self.quantidade = quantidade
 

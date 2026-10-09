@@ -7,6 +7,7 @@ class ModeloNobreak(db.Model):
     nome = db.Column(db.String(150), nullable=False)
 
     marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
+    nobreak = db.relationship('Nobreak', backref='modelos_nobreaks')
 
     def __init__(self, nome, marca_id):
         self.nome = nome

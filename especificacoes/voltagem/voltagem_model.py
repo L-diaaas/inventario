@@ -6,6 +6,8 @@ class Voltagem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     voltagem = db.Column(db.String(50), nullable=False)
 
+    nobreak = db.relationship('Nobreak', backref='voltagem')
+
     def __init__(self, voltagem):
         self.voltagem = voltagem
 
