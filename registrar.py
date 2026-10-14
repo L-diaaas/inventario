@@ -4,7 +4,7 @@ from flask import Blueprint
 
 BASE = Path(__file__).parent
 PASTAS = ['catalogos', 'componentes', 'especificacoes',
-          'localizacao', 'perifericos', 'pessoas']  # adicione 'equipamentos' quando criar
+          'localizacao', 'perifericos', 'pessoas', 'equipamentos']
 
 def registrar_blueprints(app):
     for pasta in PASTAS:
