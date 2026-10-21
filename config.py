@@ -11,7 +11,7 @@ from seguranca import limiter, registrar_hooks
 
 app = Flask(__name__)
 
-app.wsgi_app = ProxyFix(app.wsig_app, x_for=1, x_proto=1)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 origens = [o.strip() for o in os.environ.get('CORS_ORIGINS', '').split(',') if o.strip()]
 CORS(

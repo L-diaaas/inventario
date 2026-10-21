@@ -1,5 +1,5 @@
 from config import app, db
-from flask import jsonify, request
+from flask import jsonify, request, g
 from registrar import registrar_blueprints
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt_identity
 from pessoas.equipe_ti.equipe_ti_model import EquipeTI

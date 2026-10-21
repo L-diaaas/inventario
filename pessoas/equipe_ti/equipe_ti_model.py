@@ -20,7 +20,7 @@ class EquipeTI(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'nome': self.nome or self.email.split('@')[0].capitaliza(),
+            'nome': self.nome or self.email.split('@')[0].capitalize(),
             'email': self.email,
             'role': self.role,
             'ativo': self.ativo,

@@ -3,7 +3,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 limiter = Limiter(
-    key_func = get_remore_address,
+    key_func = get_remote_address,
     default_limits=["300 per minute"],
     storage_uri="memory://"
 )
@@ -31,7 +31,7 @@ def registrar_hooks(app):
         resp.headers['Referrer-Policy'] = 'no-referrer'
         resp.headers['Content-Security-Policy'] = "default-src 'none'; frame-ancestors 'none'"
         if request.is_secure:
-            resp.headers['Srict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         if resp.mimetype == 'application/json':
             resp.headers['Cache-Control'] = 'no-store'
         return resp

@@ -10,7 +10,7 @@ from seguranca import limiter
 
 equipe_ti_bp = Blueprint('equipe_ti_routes', __name__, url_prefix='/equipe-ti')
 
-_HASH_FALSO = generate_password_hash('')
+_HASH_FALSO = generate_password_hash('5mV6j0FMxOlhlfDYNNtetCFZ30ZwWElwREVNvQSeJOc')
 
 @equipe_ti_bp.route('/login', methods=['POST'])
 @limiter.limit('5 per minute;30 per hour')
@@ -63,7 +63,6 @@ def criar_membro():
     senha = dados.get('senha') or ''
     nome = (dados.get('nome') or '').strip()
     role = (dados.get('role') or 'ti').strip()
-
 
     if not email or '@' not in email:
         return {'error': 'E-mail inválido.'}, 400

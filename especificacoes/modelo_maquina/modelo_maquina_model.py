@@ -5,7 +5,7 @@ class ModeloMaquina(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
-    slots_ram_total = db.Column(db.Integer, mullable=False, default=2)
+    slots_ram_total = db.Column(db.Integer, nullable=False, default=2)
 
     marca_id = db.Column(db.Integer, db.ForeignKey('marcas.id'), nullable=False)
 

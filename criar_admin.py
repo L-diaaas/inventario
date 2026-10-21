@@ -15,11 +15,11 @@ def main():
     with app.app_context():
         if EquipeTI.query.filter(db.func.lower(EquipeTI.email) == email).first():
             raise SystemExit('já existe um usuário com esse e-mail.')
-    membro = EquipeTI(email=email, role='ti')
-    membro.set_senha(senha)
-    db.session.add(membro)
-    db.session.commit()
-    print(f'Usuário {email} criado.')
+        membro = EquipeTI(email=email, role='ti')
+        membro.set_senha(senha)
+        db.session.add(membro)
+        db.session.commit()
+        print(f'Usuário {email} criado.')
 
 if __name__ == '__main__':
     main()
